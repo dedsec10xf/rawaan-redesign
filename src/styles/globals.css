@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ * Design tokens (locked) — CSS-first Tailwind v4 config.
+ * Everything downstream references these; no raw hex/px in components.
+ * ------------------------------------------------------------------ */
+@theme {
+  /* Palette */
+  --color-ink: #0c1210; /* primary dark bg */
+  --color-bone: #f4f1ea; /* light bg / text-on-dark */
+  --color-stone: #a89f91; /* secondary text / borders */
+  --color-glacier: #b8cdd3; /* cool accent / focus rings */
+  --color-saffron: #c9722b; /* legacy CTA accent — no live references */
+  --color-accent: #4c8f99; /* teal accent — lifted from #3E7C85 to pass 4.5:1 on ink (~5.1:1) */
+  --color-pine: #22322b; /* deep panels */
+
+  /* Type families — self-hosted via @fontsource-variable (see main.jsx) */
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale — clamp(min, fluid, max) */
+  --text-display: clamp(2.5rem, 1.3rem + 6vw, 6rem); /* 40 → 96 */
+  --text-h2: clamp(2rem, 1.3rem + 3.5vw, 4rem); /* 32 → 64 */
+  --text-h3: clamp(1.375rem, 1.15rem + 1.1vw, 2rem); /* 22 → 32 */
+  --text-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* 16 → 18 */
+
+  /* Global ease (mirrors lib/easings.js EXPO_OUT_CSS) */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base — dark-first page.
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+
+  /* Focus rings — glacier, only when keyboard-navigating */
+  :focus-visible {
+    outline: 2px solid var(--color-glacier);
+    outline-offset: 3px;
+  }
+
+  /* Reduced motion: scope to CSS-owned motion only (CSS animations,
+     transitions, native smooth scroll). GSAP/Lenis are handled in JS — the
+     provider disables Lenis and primitives skip GSAP tweens — so this rule
+     must not touch transform/opacity, which GSAP drives via inline styles. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    html {
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Stacking scale — single source of truth for fixed layers.
+   preloader > header > menu overlay > grain > content. */
+:root {
+  --z-grain: 100;
+  --z-menu-overlay: 150;
+  --z-header: 160;
+  --z-preloader: 200;
+}
+
+/* ------------------------------------------------------------------ *
+ * Custom classes — the only three allowed (see CLAUDE.md conventions).
+ * ------------------------------------------------------------------ */
+
+/* Editorial container: content maxes at 1440 with fluid outer margins */
+.container-editorial {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 5vw, 96px);
+}
+
+/* Uppercase micro-label ("EXPEDITIONS / 01"). Color comes from the consumer
+   (SectionLabel's `tone`, or a text-* utility) so it inherits currentColor —
+   no hardcoded stone that would need !important to override on bone. */
+.label {
+  font-family: var(--font-sans);
+  font-size: clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem); /* 11 → 12 */
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+/* Film grain overlay — fixed, non-interactive, sits above everything */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grain {
+    display: none;
+  }
+}
