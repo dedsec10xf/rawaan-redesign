@@ -35,7 +35,7 @@ const FALLBACKS = {
   StatsPartners: 'min-h-[60svh] bg-bone',
   Testimonial: 'min-h-[80svh] md:min-h-svh bg-ink',
   Contact: 'min-h-[90svh] bg-ink',
-  Footer: 'min-h-[70svh] bg-pine',
+  Footer: 'min-h-[70svh] bg-tarn',
 };
 
 function SectionFallback({ name }) {

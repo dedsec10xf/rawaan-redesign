@@ -12,7 +12,8 @@
   --color-glacier: #b8cdd3; /* cool accent / focus rings */
   --color-saffron: #c9722b; /* legacy CTA accent — no live references */
   --color-accent: #4c8f99; /* teal accent — lifted from #3E7C85 to pass 4.5:1 on ink (~5.1:1) */
-  --color-pine: #22322b; /* deep panels */
+  --color-pine: #22322b; /* legacy deep panel — no live references (superseded by tarn) */
+  --color-tarn: #223032; /* deep panel, blue-teal hued — same depth as pine, footer bg */
 
   /* Type families — self-hosted via @fontsource-variable (see main.jsx) */
   --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;

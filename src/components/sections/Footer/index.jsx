@@ -5,16 +5,16 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { footer } from '@/data/footer';
 import { initFooter } from './anim';
 
-const { columns, watermark, wordmark, legal, credit } = footer;
+const { columns, watermark, wordmark, legal } = footer;
 
-// Shared link treatment: bone-on-pine for contrast, stone hover→bone, and a
+// Shared link treatment: bone-on-tarn for contrast, stone hover→bone, and a
 // 44px min tap target.
 const LINK = 'inline-flex min-h-11 items-center text-stone transition-colors duration-300 hover:text-bone';
 
 // External-link attributes, applied only when a link opts in.
 const ext = (external) => (external ? { target: '_blank', rel: 'noreferrer' } : {});
 
-// Section 8 tail. Pine panel with three columns, a decorative Nastaliq
+// Section 8 tail. Tarn panel with three columns, a decorative Nastaliq
 // watermark, and an oversized wordmark clipped at the section's bottom edge
 // that rises on scroll (see anim.js). Parallax is disabled under reduced motion.
 export default function Footer() {
@@ -33,7 +33,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer id="footer" ref={scope} className="relative overflow-hidden bg-pine text-bone">
+    <footer id="footer" ref={scope} className="relative overflow-hidden bg-tarn text-bone">
       <div className="container-editorial relative pt-16 pb-40 md:pt-20 md:pb-56">
         {/* Decorative watermark — sits behind the content (z-0) */}
         <span
@@ -95,16 +95,10 @@ export default function Footer() {
           </div>
 
           {/* Legal */}
-          <div className="mt-16 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-16">
             <p className="label text-stone">
               © {year} {legal.company}. {legal.rights}
             </p>
-            <a
-              href={credit.href}
-              className="label inline-flex min-h-11 items-center text-stone transition-colors duration-300 hover:text-bone"
-            >
-              {credit.label}
-            </a>
           </div>
         </div>
       </div>

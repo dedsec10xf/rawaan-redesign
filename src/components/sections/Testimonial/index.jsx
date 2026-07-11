@@ -53,11 +53,11 @@ export default function Testimonial() {
         </div>
 
         <figure className="mt-8">
-          <blockquote className="mx-auto max-w-[24ch]">
+          <blockquote>
             <RevealText
               as="p"
               asLines
-              className="font-display text-h2 leading-[1.15] text-bone"
+              className="mx-auto max-w-[24ch] font-display text-h2 leading-[1.15] text-bone"
             >
               {testimonial.quote.map((line, i) => (
                 <span key={i} className="block">

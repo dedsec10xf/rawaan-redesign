@@ -43,5 +43,4 @@ export const footer = {
     company: 'Rawaan Pakistan',
     rights: 'All rights reserved.',
   },
-  credit: { label: 'Site by Studio Meridian', href: '#' },
 };
