@@ -21,6 +21,10 @@ import { cn } from '@/utils/cn';
 // trigger resolves against horizontal scroll instead of the viewport.
 // start: ScrollTrigger start (e.g. 'left 80%' for horizontal reveals); defaults
 // to useClipReveal's 'top 85%'.
+// objectPosition: CSS object-position (e.g. '50% 15%') for object-cover crops
+// where the default center crop hides the subject — a specific photo's focal
+// point, not a layout concern, so it's data-driven per call site rather than
+// a class baked into the component.
 export function RevealImage({
   src,
   alt = '',
@@ -35,6 +39,7 @@ export function RevealImage({
   containerAnimation,
   className,
   imgClassName,
+  objectPosition,
 }) {
   const frameRef = useRef(null);
   const imgRef = useRef(null);
@@ -73,6 +78,7 @@ export function RevealImage({
         decoding="async"
         fetchPriority={eager ? 'high' : 'auto'}
         className={cn('relative h-full w-full object-cover', imgClassName)}
+        style={objectPosition ? { objectPosition } : undefined}
       />
     </div>
   );

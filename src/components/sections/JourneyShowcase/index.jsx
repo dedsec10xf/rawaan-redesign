@@ -55,14 +55,14 @@ export default function JourneyShowcase() {
             const vh = window.innerHeight;
             const rows = [];
             trackRef.current?.querySelectorAll('[data-panel]').forEach((panel, i) => {
-              ['[data-reveal-image]', '[data-reveal-name]'].forEach((sel) => {
-                const el = panel.querySelector(sel);
-                if (!el) return;
-                const rect = el.getBoundingClientRect();
-                const fullyOnScreen = rect.left >= 0 && rect.right <= vw && rect.top >= 0 && rect.bottom <= vh;
-                if (!fullyOnScreen) return;
-                const opacity = window.getComputedStyle(el).opacity;
-                rows.push({ panel: i, target: sel, opacity, rect: { w: Math.round(rect.width), h: Math.round(rect.height) } });
+              ['[data-reveal-image]', '[data-reveal-name]', '[data-reveal-meta]'].forEach((sel) => {
+                panel.querySelectorAll(sel).forEach((el) => {
+                  const rect = el.getBoundingClientRect();
+                  const fullyOnScreen = rect.left >= 0 && rect.right <= vw && rect.top >= 0 && rect.bottom <= vh;
+                  if (!fullyOnScreen) return;
+                  const opacity = window.getComputedStyle(el).opacity;
+                  rows.push({ panel: i, target: sel, opacity, rect: { w: Math.round(rect.width), h: Math.round(rect.height) } });
+                });
               });
             });
             const broken = rows.filter((r) => r.opacity === '0' || r.rect.w === 0 || r.rect.h === 0);

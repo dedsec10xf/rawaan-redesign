@@ -195,11 +195,21 @@ export default function Regions() {
         <a
           href="#contact"
           onClick={handleClick}
-          className="font-display leading-none tracking-[0em] text-stone transition-[color,letter-spacing] duration-300 group-hover:tracking-[0.02em] group-hover:text-bone group-focus-within:tracking-[0.02em] group-focus-within:text-bone"
+          className={cn(
+            'font-display leading-none tracking-[0em] transition-[color,letter-spacing] duration-300',
+            // Compensation for the lowered backdrop overlay (see below): resting
+            // text alone (text-stone) only clears 4.5:1 against a worst-case
+            // bright backdrop pixel down to ~ink/83 — below that it needs a
+            // brighter resting color. bone/90 measures ~5.48:1 at ink/70,
+            // still short of the hover state's full bone so the hovered pair
+            // still reads as the brightest.
+            backdropIsActive ? 'text-bone/90' : 'text-stone',
+            'group-hover:tracking-[0.02em] group-hover:text-bone group-focus-within:tracking-[0.02em] group-focus-within:text-bone',
+          )}
         >
           {region.name}
         </a>
-        <span className="relative block aspect-[3/2] h-[0.8em] w-auto shrink-0 translate-y-[0.08em] overflow-hidden">
+        <span className="relative block aspect-[3/2] h-[1.4em] w-auto shrink-0 overflow-hidden">
           <img
             src={region.image.src}
             srcSet={region.image.srcSet}
@@ -248,10 +258,12 @@ export default function Regions() {
         >
           <img ref={imgARef} alt="" className="absolute inset-0 h-full w-full object-cover opacity-0" />
           <img ref={imgBRef} alt="" className="absolute inset-0 h-full w-full object-cover opacity-0" />
-          {/* ink/85 — verified: worst-case (pure-white backdrop pixel) still
-              clears stone/backdrop contrast at ~4.72:1 (>4.5 AA); bone clears
-              comfortably higher. See delivery report for the full computation. */}
-          <div className="absolute inset-0 bg-ink/85" />
+          {/* ink/70 (down from /85 for a brighter active backdrop) — worst case
+              (pure-white backdrop pixel): plain text-stone alone would drop to
+              ~2.72:1, so the resting name compensates to bone/90 whenever the
+              backdrop is active (~5.48:1, still under the hover state's full
+              bone). Hover/focus text (full bone) clears ~6.3:1 unconditionally. */}
+          <div className="absolute inset-0 bg-ink/70" />
         </div>
       )}
 
@@ -273,9 +285,9 @@ export default function Regions() {
           onMouseLeave={() => canHover && (row1PausedRef.current = false)}
           onFocus={() => (row1PausedRef.current = true)}
           onBlur={() => (row1PausedRef.current = false)}
-          className="font-display text-display"
+          className="font-display text-h2"
         >
-          <Marquee speed={40} gap="4rem" tweenRef={row1TweenRef}>
+          <Marquee speed={40} gap="1.25em" tweenRef={row1TweenRef}>
             {renderRegions(backdropActive)}
           </Marquee>
         </div>
@@ -286,9 +298,9 @@ export default function Regions() {
           onFocus={() => (row2PausedRef.current = true)}
           onBlur={() => (row2PausedRef.current = false)}
           className="font-display"
-          style={{ fontSize: 'calc(var(--text-display) * 0.85)' }}
+          style={{ fontSize: 'calc(var(--text-h2) * 0.85)' }}
         >
-          <Marquee speed={34} reverse gap="4rem" tweenRef={row2TweenRef}>
+          <Marquee speed={34} reverse gap="1.25em" tweenRef={row2TweenRef}>
             {renderRegions(backdropActive)}
           </Marquee>
         </div>

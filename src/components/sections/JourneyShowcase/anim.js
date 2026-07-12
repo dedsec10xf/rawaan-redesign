@@ -1,6 +1,11 @@
 import { gsap } from '@/lib/gsap';
 
-const PARALLAX = 3; // % inner-image drift each way (≤6% travel), opposite the track
+// % drift each way on the full-bleed image layer — total travel (2×PARALLAX)
+// is 8%, up from the portrait's 6% now that the image is the whole canvas,
+// still under the 12% cap (CLAUDE.md). Panel.jsx overscans the wrapper
+// left/right by PARALLAX + 2% so this drift never reveals a gap at the panel
+// edge (same overscan formula as CinematicMedia's peak+2).
+const PARALLAX = 4;
 
 // Pinned horizontal scaffold + panel choreography. ALL of it lives inside
 // matchMedia('(min-width: 768px)'); below that (mobile carousel cut — see M6
@@ -10,7 +15,9 @@ const PARALLAX = 3; // % inner-image drift each way (≤6% travel), opposite the
 // reverting it kills the tweens + ScrollTriggers and removes the pin-spacer.
 //
 // Reveal ownership (CLAUDE.md): anim.js is the single owner of hide+reveal for
-// every panel's image/name — RevealImage always renders `static` (see
+// every panel's image / name / meta+button (the full-bleed layer, the name
+// block, and the two [data-reveal-meta] nodes — meta rows + Explore button —
+// read as one logical target) — RevealImage always renders `static` (see
 // Panel.jsx). Panel 1 (on-screen at pin start) keeps its original plain
 // vertical ScrollTrigger, unchanged — it was never reported broken. Panels
 // 2–5 are owned entirely here: hidden via `gsap.set` and revealed via a
@@ -89,6 +96,7 @@ export function initJourneyShowcase({ section, pin, track, progressBar, counter,
       const targets = [
         panel.querySelector('[data-reveal-image]'),
         panel.querySelector('[data-reveal-name]'),
+        ...panel.querySelectorAll('[data-reveal-meta]'),
       ].filter(Boolean);
       if (!targets.length) return;
 

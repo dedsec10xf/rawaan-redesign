@@ -17,6 +17,9 @@ export const journeys = [
       'The long walk to the foot of the savage mountain, unhurried and fully supported.',
     image: images['k2-base-camp'],
     imageAlt: 'K2 rising above the Baltoro glacier at first light',
+    // Source photo is a tall portrait with the summit near the top edge —
+    // object-cover's default center crop buries it under the rock face below.
+    imageFocalPoint: '50% 12%',
   },
   {
     id: 'kalash-chilam-joshi',
