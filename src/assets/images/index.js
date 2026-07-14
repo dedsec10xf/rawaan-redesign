@@ -69,6 +69,84 @@ import regionNaranSrcSet from './region-naran.jpg?w=800;1400;2400&format=webp&as
 import regionNaran from './region-naran.jpg?w=1400&format=webp';
 import regionNaranLqip from './region-naran.jpg?w=20&format=webp&blur=2&inline';
 
+// --- tours (panel category) — dedicated photos added post-launch-audit ---
+import mashabrumBaseCampSrcSet from './mashabrum-base-camp.jpg?w=400;800;1200&format=webp&as=srcset';
+import mashabrumBaseCamp from './mashabrum-base-camp.jpg?w=800&format=webp';
+
+// --- experiences (panel category) — dedicated photos added post-launch-audit ---
+import glacierTrekSrcSet from './glacier-trek.jpg?w=400;800;1200&format=webp&as=srcset';
+import glacierTrek from './glacier-trek.jpg?w=800&format=webp';
+import porterGuideSupportSrcSet from './porter-guide-support.jpg?w=400;800;1200&format=webp&as=srcset';
+import porterGuideSupport from './porter-guide-support.jpg?w=800&format=webp';
+import kalashCulturalEveningSrcSet from './kalash-cultural-evening.jpg?w=400;800;1200&format=webp&as=srcset';
+import kalashCulturalEvening from './kalash-cultural-evening.jpg?w=800&format=webp';
+import sufiHeritageWalkSrcSet from './sufi-heritage-walk.jpg?w=400;800;1200&format=webp&as=srcset';
+import sufiHeritageWalk from './sufi-heritage-walk.jpg?w=800&format=webp';
+import sikhPilgrimageGuideSrcSet from './sikh-pilgrimage-guide.jpg?w=400;800;1200&format=webp&as=srcset';
+import sikhPilgrimageGuide from './sikh-pilgrimage-guide.jpg?w=800&format=webp';
+import poloVipViewingSrcSet from './polo-vip-viewing.jpg?w=400;800;1200&format=webp&as=srcset';
+import poloVipViewing from './polo-vip-viewing.jpg?w=800&format=webp';
+
+// --- vehicles (panel category) ---
+import corollaSrcSet from './corolla.jpg?w=400;800;1200&format=webp&as=srcset';
+import corolla from './corolla.jpg?w=800&format=webp';
+import pradoSrcSet from './prado.jpg?w=400;800;1200&format=webp&as=srcset';
+import prado from './prado.jpg?w=800&format=webp';
+import landCruiserSrcSet from './land-cruiser.jpg?w=400;800;1200&format=webp&as=srcset';
+import landCruiser from './land-cruiser.jpg?w=800&format=webp';
+import hiaceSrcSet from './hiace.jpg?w=400;800;1200&format=webp&as=srcset';
+import hiace from './hiace.jpg?w=800&format=webp';
+
+// --- hotels (panel category) ---
+import oldHunzaInnSrcSet from './old-hunza-inn.jpg?w=400;800;1200&format=webp&as=srcset';
+import oldHunzaInn from './old-hunza-inn.jpg?w=800&format=webp';
+import hunzaEmbassySrcSet from './hunza-embassy.jpg?w=400;800;1200&format=webp&as=srcset';
+import hunzaEmbassy from './hunza-embassy.jpg?w=800&format=webp';
+import hunzaSerenaSrcSet from './hunza-serena.jpg?w=400;800;1200&format=webp&as=srcset';
+import hunzaSerena from './hunza-serena.jpg?w=800&format=webp';
+import k2MotelSrcSet from './k2-motel.jpg?w=400;800;1200&format=webp&as=srcset';
+import k2Motel from './k2-motel.jpg?w=800&format=webp';
+import skarduContinentalSrcSet from './skardu-continental.jpg?w=400;800;1200&format=webp&as=srcset';
+import skarduContinental from './skardu-continental.jpg?w=800&format=webp';
+import shangrilaSkarduSrcSet from './shangrila-skardu.jpg?w=400;800;1200&format=webp&as=srcset';
+import shangrilaSkardu from './shangrila-skardu.jpg?w=800&format=webp';
+import ptdcChitralSrcSet from './ptdc-chitral.jpg?w=400;800;1200&format=webp&as=srcset';
+import ptdcChitral from './ptdc-chitral.jpg?w=800&format=webp';
+import chitralReserveSrcSet from './chitral-reserve.jpg?w=400;800;1200&format=webp&as=srcset';
+import chitralReserve from './chitral-reserve.jpg?w=800&format=webp';
+import hindukushHeightsSrcSet from './hindukush-heights.jpg?w=400;800;1200&format=webp&as=srcset';
+import hindukushHeights from './hindukush-heights.jpg?w=800&format=webp';
+import fairyMeadowsCottagesSrcSet from './fairy-meadows-cottages.jpg?w=400;800;1200&format=webp&as=srcset';
+import fairyMeadowsCottages from './fairy-meadows-cottages.jpg?w=800&format=webp';
+import raikotSaraiSrcSet from './raikot-sarai.jpg?w=400;800;1200&format=webp&as=srcset';
+import raikotSarai from './raikot-sarai.jpg?w=800&format=webp';
+import nangaParbatViewLodgeSrcSet from './nanga-parbat-view-lodge.jpg?w=400;800;1200&format=webp&as=srcset';
+import nangaParbatViewLodge from './nanga-parbat-view-lodge.jpg?w=800&format=webp';
+import lalazarInnSrcSet from './lalazar-inn.jpg?w=400;800;1200&format=webp&as=srcset';
+import lalazarInn from './lalazar-inn.jpg?w=800&format=webp';
+import parkViewNaranSrcSet from './park-view-naran.jpg?w=400;800;1200&format=webp&as=srcset';
+import parkViewNaran from './park-view-naran.jpg?w=800&format=webp';
+import pcNaranSrcSet from './pc-naran.jpg?w=400;800;1200&format=webp&as=srcset';
+import pcNaran from './pc-naran.jpg?w=800&format=webp';
+
+// --- route waypoints (panel category) — one photo per physical stop, reused
+// across every route that passes through it (Besham/Chilas sit on 3 routes
+// each but are the same real place) ---
+import beshamSrcSet from './besham.jpg?w=400;800;1200&format=webp&as=srcset';
+import besham from './besham.jpg?w=800&format=webp';
+import chilasSrcSet from './chilas.jpg?w=400;800;1200&format=webp&as=srcset';
+import chilas from './chilas.jpg?w=800&format=webp';
+import gilgitSrcSet from './gilgit.jpg?w=400;800;1200&format=webp&as=srcset';
+import gilgit from './gilgit.jpg?w=800&format=webp';
+import skarduRoadSrcSet from './skardu-road.jpg?w=400;800;1200&format=webp&as=srcset';
+import skarduRoad from './skardu-road.jpg?w=800&format=webp';
+import abbottabadSrcSet from './abbottabad.jpg?w=400;800;1200&format=webp&as=srcset';
+import abbottabad from './abbottabad.jpg?w=800&format=webp';
+import balakotSrcSet from './balakot.jpg?w=400;800;1200&format=webp&as=srcset';
+import balakot from './balakot.jpg?w=800&format=webp';
+import kaghanSrcSet from './kaghan.jpg?w=400;800;1200&format=webp&as=srcset';
+import kaghan from './kaghan.jpg?w=800&format=webp';
+
 // --- sections (full-bleed category) ---
 import heroPosterSrcSet from './hero-poster.jpg?w=800;1400;2400&format=webp&as=srcset';
 import heroPoster from './hero-poster.jpg?w=1400&format=webp';
@@ -114,4 +192,78 @@ export const images = {
   'manifesto-1': fullBleed(manifesto1, manifesto1SrcSet, manifesto1Lqip),
   'manifesto-2': fullBleed(manifesto2, manifesto2SrcSet, manifesto2Lqip),
   'testimonial-bg': fullBleed(testimonialBg, testimonialBgSrcSet, testimonialBgLqip),
+
+  // tours — dedicated photo (post-launch-audit; most tours still fall back
+  // to a shared journeys/ shot above until their own photo arrives)
+  'mashabrum-base-camp': panel(mashabrumBaseCamp, mashabrumBaseCampSrcSet),
+
+  // experiences — dedicated photos (post-launch-audit; whitewater-rafting,
+  // photography-workshop, luxury-yurt-glamping and gandhara-monastery-tour
+  // still fall back to a shared category shot above)
+  'glacier-trek': panel(glacierTrek, glacierTrekSrcSet),
+  'porter-guide-support': panel(porterGuideSupport, porterGuideSupportSrcSet),
+  'kalash-cultural-evening': panel(kalashCulturalEvening, kalashCulturalEveningSrcSet),
+  'sufi-heritage-walk': panel(sufiHeritageWalk, sufiHeritageWalkSrcSet),
+  'sikh-pilgrimage-guide': panel(sikhPilgrimageGuide, sikhPilgrimageGuideSrcSet),
+  'polo-vip-viewing': panel(poloVipViewing, poloVipViewingSrcSet),
+
+  // vehicles — keyed by vehicle id (brv still falls back to 'adventure')
+  corolla: panel(corolla, corollaSrcSet),
+  prado: panel(prado, pradoSrcSet),
+  'land-cruiser': panel(landCruiser, landCruiserSrcSet),
+  hiace: panel(hiace, hiaceSrcSet),
+
+  // hotels — keyed by hotel id
+  'old-hunza-inn': panel(oldHunzaInn, oldHunzaInnSrcSet),
+  'hunza-embassy': panel(hunzaEmbassy, hunzaEmbassySrcSet),
+  'hunza-serena': panel(hunzaSerena, hunzaSerenaSrcSet),
+  'k2-motel': panel(k2Motel, k2MotelSrcSet),
+  'skardu-continental': panel(skarduContinental, skarduContinentalSrcSet),
+  'shangrila-skardu': panel(shangrilaSkardu, shangrilaSkarduSrcSet),
+  'ptdc-chitral': panel(ptdcChitral, ptdcChitralSrcSet),
+  'chitral-reserve': panel(chitralReserve, chitralReserveSrcSet),
+  'hindukush-heights': panel(hindukushHeights, hindukushHeightsSrcSet),
+  'fairy-meadows-cottages': panel(fairyMeadowsCottages, fairyMeadowsCottagesSrcSet),
+  'raikot-sarai': panel(raikotSarai, raikotSaraiSrcSet),
+  'nanga-parbat-view-lodge': panel(nangaParbatViewLodge, nangaParbatViewLodgeSrcSet),
+  'lalazar-inn': panel(lalazarInn, lalazarInnSrcSet),
+  'park-view-naran': panel(parkViewNaran, parkViewNaranSrcSet),
+  'pc-naran': panel(pcNaran, pcNaranSrcSet),
+
+  // route waypoints — keyed by physical place, not per-route waypoint id
+  // (routes.js's waypoint `image` fields point at these same keys directly)
+  besham: panel(besham, beshamSrcSet),
+  chilas: panel(chilas, chilasSrcSet),
+  gilgit: panel(gilgit, gilgitSrcSet),
+  'skardu-road': panel(skarduRoad, skarduRoadSrcSet),
+  abbottabad: panel(abbottabad, abbottabadSrcSet),
+  balakot: panel(balakot, balakotSrcSet),
+  kaghan: panel(kaghan, kaghanSrcSet),
 };
+
+// Flat grey box, no build-time asset — the PROD fallback for an unknown key.
+// Same {src, srcSet, sizes} shape as every real entry so a consumer never has
+// to special-case it.
+const PLACEHOLDER = {
+  src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23E3E9ED'/%3E%3C/svg%3E",
+  srcSet: undefined,
+  sizes: '100vw',
+};
+
+// The ONE way data-driven consumers (TripCard, ExperienceCard, Categories,
+// any future one) should read an image — never `images[key]` directly. A
+// bad key (typo, renamed asset) is a data bug, not a reason to crash: DEV
+// throws loud and immediately at the call site so it's caught while
+// building; PROD swaps in a visible grey placeholder instead of taking the
+// whole page down (see the fairy-meadows/rakaposhi-base-camp incident this
+// guard was added for — a wrong key silently produced `undefined` and blew
+// up TripCard's `item.image.src` with no error boundary in front of it).
+export function resolveImage(key) {
+  const resolved = images[key];
+  if (resolved) return resolved;
+
+  if (import.meta.env.DEV) {
+    throw new Error(`Unknown image key: "${key}". Available: ${Object.keys(images).join(', ')}`);
+  }
+  return PLACEHOLDER;
+}

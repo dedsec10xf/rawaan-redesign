@@ -44,9 +44,9 @@ Featured tour card shows its included-experience chips → "Customize this trip"
 ONE ExperienceCard component serves three surfaces: homepage section, planner step 4, tour detail page.
 
 ## State (src/store/tripStore.js — Zustand)
-{ destination, category, dates{start,end}, groupSize, budget, travelStyle, baseTourId, selectedExperienceIds[], itinerary[] }
-actions: setField, toggleExperience, loadTour, loadPackage, addDay, editDay, reset
-derived: useSummary() → { nights, travelers, experienceCount, estimatedCost }
+{ destination[], category, dates{start,end}, groupSize, budget, travelStyle, notes, baseTourId, selectedExperienceIds[], itinerary[] }
+actions: setField, toggleExperience, toggleDayExperience, loadTour, loadPackage, addDay, editDay, removeDay, reset
+derived: useSummary() → { nights, travelers, experienceCount, estimatedCost, dayCount }
 Trip Summary panel appears only once the store is dirty.
 
 ## Routes (react-router)
@@ -54,7 +54,7 @@ Trip Summary panel appears only once the store is dirty.
 /packages · /destinations · /experiences · /corporate · /about · /blog · /contact — routed shells for the demo.
 
 ## Homepage IA (build order = milestones)
-1 Hero + Planner widget · 2 Explore by Category (5 tiles) · 3 Featured Tours (filterable grid) · 4 Curated Packages · 5 Build Your Own Journey (5-step) · 6 Local Experiences · 7 Journey Timeline · 8 Trust · 9 Testimonials · 10 FAQ + Lead form. Persistent: floating Trip Summary. Header: light, sticky, cyan "Plan your trip" pill. Footer: navy, compact, trust badges.
+1 Hero + Planner widget · 2 Explore by Category (5 tiles) · 3 Featured Tours (filterable grid) · 4 Curated Packages · 5 Build Your Own Journey (5-step, /build — step 5/Review contains the Journey Timeline) · 6 Local Experiences · 7 Trust · 8 Testimonials · 9 FAQ + Lead form. Persistent: floating Trip Summary. Header: light, sticky, cyan "Plan your trip" pill. Footer: navy, compact, trust badges.
 
 ## Card anatomy (standard, from Intrepid/Dribbble references)
 [image + rating chip ★4.8] [title Fraunces] [meta: duration · difficulty · region] [icon row: hotel class, transport, max group] [included experience chips: 3 + "+2"] [footer: "From $X" ↔ CTA]
@@ -68,7 +68,17 @@ Manifesto · pinned JourneyShowcase (pins block interaction) · Regions marquee 
 ## Milestones
 V1 Foundation swap (tokens, type, radius/shadow, kill removed sections, light Header/Footer, react-router + route shells)
 V2 Zustand store + shared primitives (TripCard, ExperienceCard, Chip, FormField set, Rating, SectionHeader)
-V3 Hero + planner widget · V4 Featured Tours + Category tiles · V5 Local Experiences · V6 Build Your Own Journey · V7 Journey Timeline · V8 Trip Summary · V9 Packages + Trust + Testimonials + FAQ/Lead · V10 Tour Detail page · V11 Polish (perf, a11y forms, reduced-motion, responsive, Lighthouse)
+V3 Hero + planner widget · V4 Featured Tours + Category tiles · V5 Local Experiences · V6 Build Your Own Journey (5-step planner; step 5/Review absorbs the former standalone V7 Journey Timeline milestone — it lives inside the planner flow, not as a homepage section) · V7 Trip Summary floating panel · V8 Packages + Trust + Testimonials + FAQ/Lead · V9 Tour Detail page · V10 Polish (perf, a11y forms, reduced-motion, responsive, Lighthouse)
 
 ## Workflow (unchanged)
 One component/section at a time. Stop for review. Reporting Contract applies: files changed, public API changes on shared components, judgement calls, direct answers to every question asked, lint/build results.
+## Reporting Contract (v2 — concise)
+After each delivery, report ONLY:
+1. DECISIONS LOG — one entry per non-obvious choice:
+   [what changed] / Reason: [why] / Risk: [what it might cost later]
+2. API CHANGES — any new/changed props or exports on SHARED components, hooks, or the store (exact names, types, defaults). Skip if none.
+3. ANSWERS — direct answers to every question the prompt asked.
+4. lint + build status (one line).
+No file-by-file narration, no spec-compliance walkthroughs, no restating what the prompt said.
+- Boundary refinement: when a grid/list is filterable, Framer owns BOTH its entrance and its filter transitions (one owner per element). Surrounding non-animated chrome (section headers) stays GSAP. Never layer a GSAP entrance under Framer layout animations.
+- Homepage browse/filter UI state lives in Home.jsx (lifted), never in tripStore. tripStore = trip data only.

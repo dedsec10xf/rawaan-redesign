@@ -8,7 +8,7 @@ import { cn } from '@/utils/cn';
 // view; renders full-width and static under reduced motion.
 //
 //   <AltitudeRule />
-//   <AltitudeRule animated={false} className="bg-stone/40" />
+//   <AltitudeRule animated={false} className="bg-navy/20" />
 //
 // containerAnimation: pass the horizontal tween of a pinned section (M6) so the
 // trigger resolves against horizontal scroll instead of the viewport.
@@ -32,7 +32,7 @@ export function AltitudeRule({ animated = true, containerAnimation, className })
   return (
     <hr
       ref={ref}
-      className={cn('h-px w-full origin-left border-0 bg-stone/25', className)}
+      className={cn('h-px w-full origin-left border-0 bg-line', className)}
     />
   );
 }

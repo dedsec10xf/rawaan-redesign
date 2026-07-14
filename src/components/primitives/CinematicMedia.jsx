@@ -6,8 +6,8 @@ import { useMedia } from '@/hooks/useMedia';
 import { cn } from '@/utils/cn';
 
 const OVERLAYS = {
-  scrim: 'bg-ink/40',
-  gradient: 'bg-gradient-to-t from-ink/85 via-ink/25 to-transparent',
+  scrim: 'bg-navy/40',
+  gradient: 'bg-gradient-to-t from-navy/85 via-navy/25 to-transparent',
   none: '',
 };
 

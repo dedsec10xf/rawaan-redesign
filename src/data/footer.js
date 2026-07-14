@@ -1,15 +1,16 @@
-// Footer content — Section 8 tail. No copy lives in JSX.
-// `external` links open in a new tab; contact `kind` is reserved for future icons.
+// Footer content. No copy lives in JSX. `external` links open in a new tab;
+// contact `kind` is reserved for future icons. `to` values are react-router
+// routes (see App.jsx's V1 route shells).
 export const footer = {
   columns: {
     explore: {
       heading: 'Explore',
       links: [
-        { label: 'Signature Journeys', href: '#journeys' },
-        { label: 'Experiences', href: '#experiences' },
-        { label: 'Regions', href: '#regions' },
-        { label: 'The Manifesto', href: '#manifesto' },
-        { label: 'Journal', href: '#journal' },
+        { label: 'Packages', to: '/packages' },
+        { label: 'Destinations', to: '/destinations' },
+        { label: 'Experiences', to: '/experiences' },
+        { label: 'Corporate', to: '/corporate' },
+        { label: 'Blog', to: '/blog' },
       ],
     },
     contact: {
@@ -36,9 +37,10 @@ export const footer = {
       ],
     },
   },
-  // Decorative Urdu (Nastaliq) watermark — "Rawaan".
-  watermark: 'رواں',
-  wordmark: 'RAWAAN',
+  // Placeholder row — text stand-ins until badge SVGs land (mirrors the
+  // StatsPartners logo-placeholder pattern this replaces). Ground truth is
+  // the client audit in CLAUDE.md's Business model section.
+  trustBadges: ['Licensed Operator', 'Dept. of Tourism', 'PATO', 'UNWTO'],
   legal: {
     company: 'Rawaan Pakistan',
     rights: 'All rights reserved.',

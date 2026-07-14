@@ -1,22 +1,19 @@
 import { images } from '@/assets/images';
 
-// Hero — Section 1. The video files aren't in the repo yet (paths are
-// placeholders); CinematicMedia falls back to the poster/still. There's no
-// separate hero.jpg, so the poster doubles as the mobile/reduced still.
+// Hero — Section 1 (v2 planner). No video/cinematic media; a bright,
+// inviting still (Hunza's terraced orchards) reads as "come plan a trip",
+// not the moody v1 establishing shot. Categories mirror the client's own
+// taxonomy (CLAUDE.md's Business model section) — used verbatim so the
+// planner's Category field matches the language Rawaan already uses.
 export const hero = {
-  label: { text: 'Pakistan, Unscripted', index: 'Est. 2014' },
-  // Two deliberate lines (rendered with a <br/>) so the reveal masks two rows.
-  headline: ['The mountains', 'have been waiting.'],
-  cta: { label: 'Begin the journey', href: '#journeys' },
-  altitude: '8,611 M',
-  scrollLabel: 'Scroll',
-  media: {
-    video: {
-      webm: '/src/assets/videos/hero.webm',
-      mp4: '/src/assets/videos/hero.mp4',
-    },
-    poster: images['hero-poster'],
-    image: images['hero-poster'],
-    alt: 'Dawn light on the Karakoram peaks, northern Pakistan',
+  eyebrow: 'PLAN YOUR JOURNEY',
+  headline: 'Build your Pakistan journey',
+  sub: 'Tell us where and how you want to travel — we\'ll shape a licensed, fully-supported itinerary around it.',
+  trustStrip: ['Licensed operator', 'Dept. of Tourism', 'PATO', 'UNWTO'],
+  browseCta: { label: 'Or browse featured tours →', href: '#featured-tours' },
+  categories: ['Adventure', 'Trekking', 'Religious', 'Culture', 'Leisure'],
+  background: {
+    ...images.hunza,
+    alt: 'Terraced orchards and Karakoram peaks above Hunza valley',
   },
 };

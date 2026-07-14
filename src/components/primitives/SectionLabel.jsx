@@ -1,18 +1,18 @@
 import { cn } from '@/utils/cn';
 
-// Color per surface. `.label` no longer hardcodes a color, so tone sets it.
+// Color per surface. `.label` doesn't hardcode a color, so tone sets it.
 const TONE = {
-  stone: 'text-stone', // dark sections (default)
-  ink: 'text-ink/60', // bone breathers — passes contrast without !important
+  slate: 'text-slate', // light surfaces (default)
+  white: 'text-white/70', // dark (navy) panels
 };
 
-// Uppercase editorial micro-label, e.g. "EXPEDITIONS / 01".
-// Dumb + prop-driven: pass the word(s) as children and an optional index.
-// Static by design (no motion), so nothing to gate on reduced-motion.
+// Micro-label, e.g. "Speak to us / 05". Dumb + prop-driven: pass the word(s)
+// as children and an optional index. Static by design (no motion), so
+// nothing to gate on reduced-motion.
 //
-//   <SectionLabel index="01">Expeditions</SectionLabel>       // stone on dark
-//   <SectionLabel tone="ink" as="h2">Manifesto</SectionLabel> // ink on bone
-export function SectionLabel({ children, index, as: Tag = 'span', tone = 'stone', className }) {
+//   <SectionLabel index="01">Speak to us</SectionLabel>      // slate on light
+//   <SectionLabel tone="white" as="h2">Contact</SectionLabel> // white on navy
+export function SectionLabel({ children, index, as: Tag = 'span', tone = 'slate', className }) {
   return (
     <Tag className={cn('label inline-flex items-center gap-2', TONE[tone], className)}>
       <span>{children}</span>

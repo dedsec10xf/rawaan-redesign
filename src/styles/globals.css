@@ -5,32 +5,46 @@
  * Everything downstream references these; no raw hex/px in components.
  * ------------------------------------------------------------------ */
 @theme {
-  /* Palette */
-  --color-ink: #0c1210; /* primary dark bg */
-  --color-bone: #f4f1ea; /* light bg / text-on-dark */
-  --color-stone: #a89f91; /* secondary text / borders */
-  --color-glacier: #b8cdd3; /* cool accent / focus rings */
-  --color-saffron: #c9722b; /* legacy CTA accent — no live references */
-  --color-accent: #4c8f99; /* teal accent — lifted from #3E7C85 to pass 4.5:1 on ink (~5.1:1) */
-  --color-pine: #22322b; /* legacy deep panel — no live references (superseded by tarn) */
-  --color-tarn: #223032; /* deep panel, blue-teal hued — same depth as pine, footer bg */
+  /* Palette v2 — light-first travel-planner UI (replaces the v1 editorial set) */
+  --color-cyan: #18c4e6; /* accent / CTA / active */
+  --color-cyan-deep: #0e8faa; /* hover, accent text on white */
+  --color-navy: #0e2233; /* primary text, dark panels, footer */
+  --color-slate: #5a6b78; /* secondary text (on light surfaces) */
+  --color-mist: #f4f7f9; /* page bg */
+  --color-white: #ffffff; /* cards */
+  --color-line: #e3e9ed; /* borders */
+  --color-accent: var(--color-cyan);
 
   /* Type families — self-hosted via @fontsource-variable (see main.jsx) */
   --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
   --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
 
-  /* Fluid type scale — clamp(min, fluid, max) */
-  --text-display: clamp(2.5rem, 1.3rem + 6vw, 6rem); /* 40 → 96 */
-  --text-h2: clamp(2rem, 1.3rem + 3.5vw, 4rem); /* 32 → 64 */
-  --text-h3: clamp(1.375rem, 1.15rem + 1.1vw, 2rem); /* 22 → 32 */
-  --text-body: clamp(1rem, 0.95rem + 0.25vw, 1.125rem); /* 16 → 18 */
+  /* Fluid type scale v2 — clamp(min, fluid, max), min/max per CLAUDE.md,
+     interpolated between 375→1440px viewports (same method as v1). Body/
+     small/label are single sizes, not fluid (CLAUDE.md gives one number). */
+  --text-display: clamp(2.25rem, 1.8rem + 1.9vw, 3.5rem); /* 36 → 56 */
+  --text-h2: clamp(1.625rem, 1.4rem + 0.95vw, 2.25rem); /* 26 → 36 */
+  --text-h3: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem); /* 18 → 22 */
+  --text-body: 1rem; /* 16 */
+  --text-small: 0.875rem; /* 14 */
+  --text-label: 0.75rem; /* 12 */
+
+  /* Radius scale (overrides Tailwind's defaults for xl/2xl to the locked px values) */
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadow scale — navy-tinted (reads more premium than neutral gray).
+     sm = resting card state, md = hover; elevation IS the hover language. */
+  --shadow-sm: 0 1px 2px 0 rgb(14 34 51 / 0.06), 0 1px 3px 0 rgb(14 34 51 / 0.08);
+  --shadow-md: 0 8px 16px -4px rgb(14 34 51 / 0.1), 0 4px 8px -2px rgb(14 34 51 / 0.08);
 
   /* Global ease (mirrors lib/easings.js EXPO_OUT_CSS) */
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ------------------------------------------------------------------ *
- * Base — dark-first page.
+ * Base — light-first page (v2).
  * ------------------------------------------------------------------ */
 @layer base {
   html {
@@ -39,16 +53,16 @@
   }
 
   body {
-    background-color: var(--color-ink);
-    color: var(--color-bone);
+    background-color: var(--color-mist);
+    color: var(--color-navy);
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: 1.6;
   }
 
-  /* Focus rings — glacier, only when keyboard-navigating */
+  /* Focus rings — cyan (accent), only when keyboard-navigating */
   :focus-visible {
-    outline: 2px solid var(--color-glacier);
+    outline: 2px solid var(--color-cyan);
     outline-offset: 3px;
   }
 
@@ -72,19 +86,18 @@
 }
 
 /* Stacking scale — single source of truth for fixed layers.
-   preloader > header > menu overlay > grain > content. */
+   header > menu dropdown (menu sits below the header bar that hosts its own close affordance). */
 :root {
-  --z-grain: 100;
   --z-menu-overlay: 150;
   --z-header: 160;
-  --z-preloader: 200;
 }
 
 /* ------------------------------------------------------------------ *
- * Custom classes — the only three allowed (see CLAUDE.md conventions).
+ * Custom classes — the only two allowed (see CLAUDE.md conventions).
  * ------------------------------------------------------------------ */
 
-/* Editorial container: content maxes at 1440 with fluid outer margins */
+/* Editorial container: content maxes at 1440 with fluid outer margins.
+   Name is a v1 holdover — still the right max-w/gutter utility for v2 layouts. */
 .container-editorial {
   width: 100%;
   max-width: 1440px;
@@ -92,30 +105,13 @@
   padding-inline: clamp(16px, 5vw, 96px);
 }
 
-/* Uppercase micro-label ("EXPEDITIONS / 01"). Color comes from the consumer
-   (SectionLabel's `tone`, or a text-* utility) so it inherits currentColor —
-   no hardcoded stone that would need !important to override on bone. */
+/* Micro-label (meta rows, form field labels, card meta). Color comes from the
+   consumer (SectionLabel's `tone`, or a text-* utility) so it inherits
+   currentColor — no hardcoded color that would need !important to override. */
 .label {
   font-family: var(--font-sans);
-  font-size: clamp(0.6875rem, 0.66rem + 0.1vw, 0.75rem); /* 11 → 12 */
+  font-size: var(--text-label);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  line-height: 1;
-}
-
-/* Film grain overlay — fixed, non-interactive, sits above everything */
-.grain {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-grain);
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .grain {
-    display: none;
-  }
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }

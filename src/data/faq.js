@@ -1,33 +1,35 @@
-// FAQ — Section 8 (accordion, Framer Motion).
+// FAQ — Section 8 (FAQ + Lead). Rewritten for a planning-platform audience
+// (v1's were written for a cinematic-brochure audience — season/fitness
+// questions that don't speak to "how does using this thing actually work").
 export const faq = [
   {
-    id: 'best-season',
-    question: 'When is the best time to travel to northern Pakistan?',
+    id: 'booking',
+    question: 'How does booking work?',
     answer:
-      'May to October for the high valleys and treks; the lowland cultural trails read best from October to March.',
+      "Build a trip on the planner (or start from a featured tour or package), send it to us, and a Rawaan specialist confirms availability and pricing directly with you — nothing is charged automatically when you submit.",
   },
   {
-    id: 'fitness',
-    question: 'How fit do I need to be?',
+    id: 'customization',
+    question: 'Can I customize a tour or package after I send it?',
     answer:
-      'It depends entirely on the journey. Every itinerary lists its physical demand, and custom trips are shaped around your level.',
+      'Yes. What you send is a starting point, not a final booking — your specialist will work through any changes to dates, hotels, or experiences with you before anything is confirmed.',
   },
   {
-    id: 'solo',
-    question: 'Can I travel solo or as a couple?',
+    id: 'payment',
+    question: 'How and when do I pay?',
     answer:
-      'Yes. Custom journeys run for parties of one upward; group expeditions have set departures you can join.',
-  },
-  {
-    id: 'permits',
-    question: 'Do you handle permits and logistics?',
-    answer:
-      'Fully. Restricted-area permits, transfers, guides and stays are all arranged before you arrive.',
+      'A deposit secures your dates once the itinerary is confirmed, with the balance due before departure. Your specialist will share exact terms and payment methods for your specific trip.',
   },
   {
     id: 'safety',
     question: 'How do you approach safety in remote areas?',
     answer:
       'Experienced local guides, conservative pacing for altitude, and evacuation plans on every high-mountain route.',
+  },
+  {
+    id: 'visas',
+    question: 'Do you help with visas and permits?',
+    answer:
+      "We handle restricted-area and trekking permits directly. For visas, we'll advise on requirements for your nationality and provide any supporting documentation you need.",
   },
 ];

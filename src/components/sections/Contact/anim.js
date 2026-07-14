@@ -1,13 +1,10 @@
-import { fadeUp, STAG } from '@/lib/presets';
+import { fadeUp } from '@/lib/presets';
 
-// Minimal, entrance only — label and the button row fade up together; the
-// headline (RevealText) and the AltitudeRule both self-animate via their own
-// primitives, so there's nothing for this section to drive there. FAQ rows
-// aren't individually entrance-animated — they're already inside the
-// section's own reveal, and their open/close state is Framer's, not GSAP's.
-export function initContact({ label, buttons, section }) {
-  fadeUp([label, buttons], {
-    stagger: STAG.base,
+// Entrance only — header, then the two columns (accordion + form card) fade
+// up together. The accordion's own open/close is Framer state UI, unrelated
+// to this one-time scroll reveal.
+export function initContact({ header, columns, section }) {
+  fadeUp([header, ...columns], {
     scrollTrigger: { trigger: section, start: 'top 80%' },
   });
 }

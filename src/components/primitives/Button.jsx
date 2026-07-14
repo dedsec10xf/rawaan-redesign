@@ -1,11 +1,15 @@
 import { cn } from '@/utils/cn';
 import { MagneticWrap } from './MagneticWrap';
 
-// Variant → class map. Saffron is the only filled accent (kept <5% of surface);
-// ghost is the restrained default on dark panels.
+// Variant → class map. primary = the cyan CTA fill — navy text clears ~7.8:1
+// on plain cyan; cyan-deep (a darker, more saturated step) sits at a
+// mid-luminance where NEITHER navy nor white text clears 4.5:1, so hover dims
+// via opacity instead of swapping the fill color. ghost = light-surface
+// outline default (v1's dark-panel ghost doesn't apply now that panels are
+// light-first).
 const VARIANTS = {
-  primary: 'bg-accent text-ink hover:bg-accent/90',
-  ghost: 'border border-stone/40 text-bone hover:border-bone',
+  primary: 'bg-accent text-navy hover:bg-accent/90',
+  ghost: 'border border-line text-navy hover:border-navy',
 };
 
 // CTA / action. Renders <button> or <a> (when href is set), optionally

@@ -1,52 +1,57 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { EXPO_OUT } from '@/lib/easings';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useLenis } from '@/hooks/useLenis';
-import { scrollToAnchor } from '@/lib/resolveAnchor';
+import { useSectionSpy } from '@/hooks/useSectionSpy';
+import { cn } from '@/utils/cn';
 import { nav } from '@/data/nav';
 import Menu from './Menu';
 
-// Fixed, always-visible header + full-screen menu. Owns the open/close state
-// (Framer via AnimatePresence), scroll-lock, focus trap, and Escape.
-//
-// No hide-on-scroll transform: writing a transform onto the header made the
-// fixed <Menu> descendant resolve against the header instead of the viewport
-// (menu collapsed / bar drifted off-screen after any scroll). The header now
-// carries no transform, and the menu is portaled out (see Menu.jsx).
+const SCROLLED_THRESHOLD = 8; // px — matches the shadow-on-scroll trigger point
+
+// Homepage sections a nav hash can point at, in document order — the
+// module-level constant keeps this array reference-stable across renders so
+// useSectionSpy's effect doesn't re-run every render (its dependency array
+// includes `ids`).
+const SPY_IDS = ['featured-tours', 'packages', 'experiences', 'trust', 'contact'];
+
+// Light, sticky header (v2). Owns the dropdown open/close state (Framer via
+// AnimatePresence) and the "has the page scrolled" flag that toggles the
+// shadow. No scroll-lock, no focus-restore-on-close, no portal — the v1
+// full-screen menu's choreography doesn't apply to a plain light dropdown.
 export default function Header() {
   const [open, setOpen] = useState(false);
-  const headerRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false);
   const toggleRef = useRef(null);
   const menuRef = useRef(null);
-  const openedOnce = useRef(false); // gate focus-restore on first render
-  const pendingHashRef = useRef(null); // anchor to scroll to AFTER the menu closes
   const reduced = usePrefersReducedMotion();
   const lenis = useLenis();
+  const { pathname } = useLocation();
+  const activeSectionId = useSectionSpy(SPY_IDS);
+  // Active nav target: the in-view homepage section's hash, or '/build' when
+  // that route is current — either way it resolves to the exact string a
+  // primary nav item's `to` would match, so Menu just does `item.to === activeTo`.
+  const activeTo = pathname === '/build' ? '/build' : activeSectionId ? `#${activeSectionId}` : null;
 
-  const scrollToHash = useCallback((href) => scrollToAnchor(lenis, href), [lenis]);
-
-  // Scroll-lock + focus management tied to open state.
+  // Shadow-on-scroll: subscribe to Lenis when it's running; fall back to a
+  // native scroll listener under reduced motion (Lenis is disabled there).
   useEffect(() => {
-    if (open) {
-      openedOnce.current = true;
-      lenis?.stop();
-      const id = requestAnimationFrame(() => {
-        menuRef.current?.querySelector('a[href], button')?.focus();
-      });
-      return () => cancelAnimationFrame(id);
-    }
-    // Menu closed: restart Lenis FIRST, then fire any deferred nav — otherwise
-    // lenis.scrollTo runs while Lenis is still stopped and is ignored.
-    lenis?.start();
-    if (openedOnce.current) toggleRef.current?.focus();
-    if (pendingHashRef.current) {
-      scrollToHash(pendingHashRef.current);
-      pendingHashRef.current = null;
-    }
-  }, [open, lenis, scrollToHash]);
+    const check = (scrollY) => setScrolled(scrollY > SCROLLED_THRESHOLD);
 
-  // Escape to close + Tab focus trap across the toggle and menu.
+    if (lenis) {
+      const onScroll = ({ scroll }) => check(scroll);
+      lenis.on('scroll', onScroll);
+      return () => lenis.off('scroll', onScroll);
+    }
+
+    const onNativeScroll = () => check(window.scrollY);
+    window.addEventListener('scroll', onNativeScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onNativeScroll);
+  }, [lenis]);
+
+  // Escape to close + Tab focus trap across the toggle and dropdown.
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => {
@@ -71,61 +76,57 @@ export default function Header() {
     return () => document.removeEventListener('keydown', onKey);
   }, [open]);
 
-  // If the menu is open, defer the scroll until it closes and Lenis restarts
-  // (see the open-state effect). If it's already closed, scroll immediately.
-  const handleNavigate = (e, href) => {
-    e?.preventDefault();
-    if (open) {
-      pendingHashRef.current = href;
-      setOpen(false);
-    } else {
-      scrollToHash(href);
-    }
-  };
-
   // Burger → X: each line slides to center and rotates.
   const line = (offset, rotate) => ({ y: open ? 0 : offset, rotate: open ? rotate : 0 });
   const lineTransition = { duration: reduced ? 0 : 0.3, ease: EXPO_OUT };
 
   return (
-    <header ref={headerRef} className="fixed inset-x-0 top-0 z-[var(--z-header)]">
-      <div className="container-editorial flex items-center justify-between py-5">
-        <a
-          href="#top"
-          onClick={(e) => handleNavigate(e, '#top')}
-          className="font-display text-xl leading-none text-bone"
-        >
+    <header
+      className={cn(
+        'sticky top-0 z-[var(--z-header)] border-b bg-white/95 backdrop-blur transition-shadow duration-300',
+        scrolled ? 'border-transparent shadow-md' : 'border-line shadow-none',
+      )}
+    >
+      <div className="container-editorial flex items-center justify-between py-4">
+        <Link to="/" onClick={() => setOpen(false)} className="font-display text-xl leading-none text-navy">
           {nav.brand}
-        </a>
+        </Link>
 
-        <button
-          ref={toggleRef}
-          type="button"
-          aria-expanded={open}
-          aria-controls="main-menu"
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          onClick={() => setOpen((o) => !o)}
-          className="-mr-2 flex h-11 w-11 items-center justify-center"
-        >
-          <span className="relative block h-4 w-6">
-            <motion.span
-              className="absolute inset-x-0 top-1/2 block h-px bg-bone"
-              animate={line(-4, 45)}
-              transition={lineTransition}
-            />
-            <motion.span
-              className="absolute inset-x-0 top-1/2 block h-px bg-bone"
-              animate={line(4, -45)}
-              transition={lineTransition}
-            />
-          </span>
-        </button>
+        <div className="flex items-center gap-4">
+          <Link
+            to={nav.cta.to}
+            className="hidden min-h-11 items-center justify-center rounded-full bg-accent px-6 font-sans text-sm font-medium text-navy transition-colors duration-300 hover:bg-accent/90 md:inline-flex"
+          >
+            {nav.cta.label}
+          </Link>
+
+          <button
+            ref={toggleRef}
+            type="button"
+            aria-expanded={open}
+            aria-controls="main-menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            onClick={() => setOpen((o) => !o)}
+            className="-mr-2 flex h-11 w-11 items-center justify-center"
+          >
+            <span className="relative block h-4 w-6">
+              <motion.span
+                className="absolute inset-x-0 top-1/2 block h-px bg-navy"
+                animate={line(-4, 45)}
+                transition={lineTransition}
+              />
+              <motion.span
+                className="absolute inset-x-0 top-1/2 block h-px bg-navy"
+                animate={line(4, -45)}
+                transition={lineTransition}
+              />
+            </span>
+          </button>
+        </div>
       </div>
 
       <AnimatePresence>
-        {open && (
-          <Menu id="main-menu" ref={menuRef} reduced={reduced} onNavigate={handleNavigate} />
-        )}
+        {open && <Menu id="main-menu" ref={menuRef} reduced={reduced} activeTo={activeTo} onNavigate={() => setOpen(false)} />}
       </AnimatePresence>
     </header>
   );

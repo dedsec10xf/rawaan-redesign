@@ -1,148 +1,200 @@
-import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
-import { preload } from 'react-dom';
+import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useGSAP } from '@/lib/gsap';
-import { Button, CinematicMedia, RevealText, SectionLabel } from '@/components/primitives';
+import { Select, Stepper, DateRange, Slider } from '@/components/ui';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { useLenis } from '@/hooks/useLenis';
 import { scrollToAnchor } from '@/lib/resolveAnchor';
+import { tours } from '@/data/tours';
 import { hero } from '@/data/hero';
-import { initHero, initHeroScrub } from './anim';
+import { useTripStore } from '@/store/tripStore';
+import { initHeroEntrance } from './anim';
 
-const AUTOPLAY_DELAY = 300; // ms — auto-play if no external trigger (e.g. Preloader)
+// Region options for the Destination field — deduped from tours.js rather
+// than hand-maintained, so a new tour's region shows up here automatically.
+const DESTINATION_OPTIONS = [...new Set(tours.map((t) => t.region))]
+  .sort()
+  .map((region) => ({ value: region, label: region }));
+const CATEGORY_OPTIONS = hero.categories.map((c) => ({ value: c, label: c }));
 
-// Section 1. Full-viewport cinematic hero. Owns its entrance timeline (created
-// paused) and exposes play() via ref so the Preloader can hand off later; if
-// nothing plays it in time it auto-plays. Reduced motion renders the final
-// state with no timeline or scrub (section gates its own choreography).
-const Hero = forwardRef(function Hero(_props, ref) {
-  // LCP element — react-dom's Float dispatcher is only active once a render
-  // is underway, so this must be called here (during Hero's own render),
-  // not at main.jsx's module top-level (before any commit, the dispatcher is
-  // a no-op there — confirmed via an empty <head>, see the delivery report).
-  // Emits <link rel="preload" as="image"> with the same responsive set the
-  // <img>/poster will use, without needing a build-time hash in index.html.
-  preload(hero.media.poster.src, {
-    as: 'image',
-    imageSrcSet: hero.media.poster.srcSet,
-    imageSizes: hero.media.poster.sizes,
-    fetchPriority: 'high',
-  });
+const BUDGET_MIN = 500;
+const BUDGET_MAX = 5000;
 
+// Section 1 (v2) — the planning entry point. This is the whole complaint the
+// client's audit raised about v1: "how can Rawaan help me plan my trip?"
+// must be answerable in 5 seconds, so the planner card sits beside the
+// headline instead of below a cinematic scroll. See CLAUDE.md's Product /
+// V3 milestone sections.
+export default function Hero() {
   const sectionRef = useRef(null);
-  const mediaLayerRef = useRef(null);
-  const contentRef = useRef(null);
-  const labelRef = useRef(null);
-  const ctaRef = useRef(null);
-  const cueRef = useRef(null);
-  const playHeadlineRef = useRef(null); // RevealText's controlled play()
-  const tlRef = useRef(null);
-  const playedRef = useRef(false);
+  const eyebrowRef = useRef(null);
+  const headlineRef = useRef(null);
+  const subRef = useRef(null);
+  const trustRef = useRef(null);
+  const cardRef = useRef(null);
 
   const reduced = usePrefersReducedMotion();
   const lenis = useLenis();
+  const navigate = useNavigate();
+  const setField = useTripStore((s) => s.setField);
 
-  // Route the CTA through the shared resolver (pin-aware) instead of a native
-  // hash jump, which bypasses Lenis and can land mid-pin.
-  const handleCta = (e) => {
-    e.preventDefault();
-    scrollToAnchor(lenis, hero.cta.href);
-  };
-
-  const play = useCallback(() => {
-    playedRef.current = true;
-    tlRef.current?.play();
-  }, []);
-  useImperativeHandle(ref, () => ({ play }), [play]);
-
-  const handleHeadlineReady = useCallback((playFn) => {
-    playHeadlineRef.current = playFn;
-  }, []);
+  const [destination, setDestination] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [guests, setGuests] = useState(2);
+  const [dates, setDates] = useState({ start: null, end: null });
+  const [budget, setBudget] = useState(2000);
+  const [errors, setErrors] = useState({});
 
   useGSAP(
     () => {
-      if (reduced) return; // static final state
-
-      tlRef.current = initHero({
-        mediaLayer: mediaLayerRef.current,
-        playHeadline: () => playHeadlineRef.current?.(),
-        label: labelRef.current,
-        button: ctaRef.current,
-        cue: cueRef.current,
+      if (reduced) return; // static final state — form is already interactive
+      initHeroEntrance({
+        eyebrow: eyebrowRef.current,
+        headline: headlineRef.current,
+        sub: subRef.current,
+        trust: trustRef.current,
+        card: cardRef.current,
       });
-      initHeroScrub({ section: sectionRef.current, content: contentRef.current });
-
-      const t = setTimeout(() => {
-        if (!playedRef.current) play();
-      }, AUTOPLAY_DELAY);
-
-      return () => {
-        clearTimeout(t);
-        tlRef.current = null;
-      };
     },
     { scope: sectionRef, dependencies: [reduced] },
   );
 
+  const handleBrowse = (e) => {
+    e.preventDefault();
+    scrollToAnchor(lenis, hero.browseCta.href);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const nextErrors = {};
+    if (!destination) nextErrors.destination = 'Pick a destination';
+    if (!category) nextErrors.category = 'Pick a category';
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+    setErrors({});
+    // Hero's own quick-pick stays single-select (a fast planning entry
+    // point, not the full multi-region builder) — tripStore.destination is
+    // an array, so it wraps the one pick.
+    setField('destination', [destination]);
+    setField('category', category);
+    setField('groupSize', guests);
+    setField('dates', dates);
+    setField('budget', budget);
+    navigate('/build');
+  };
+
   return (
-    <section ref={sectionRef} className="relative min-h-svh overflow-hidden bg-ink text-bone">
-      {/* Background media layer (settle-zoom target for the entrance) */}
-      <div ref={mediaLayerRef} className="absolute inset-0">
-        <CinematicMedia
-          video={hero.media.video}
-          poster={hero.media.poster}
-          image={hero.media.image}
-          alt={hero.media.alt}
-          overlay="scrim"
-          parallax={10}
-          priority
-          reveal={false}
-          className="h-full w-full"
+    <section ref={sectionRef} className="relative min-h-[85svh] overflow-hidden bg-mist">
+      {/* Background photo + light scrim, desktop only (per CLAUDE.md's mobile
+          call: dropped in favor of a plain mist bg rather than a shorter
+          band, so the single-column form reads clean with no busy backdrop). */}
+      <div className="absolute inset-0 hidden md:block" aria-hidden="true">
+        <img
+          src={hero.background.src}
+          srcSet={hero.background.srcSet}
+          sizes={hero.background.sizes}
+          alt=""
+          className="h-full w-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+        />
+        {/* Mist-to-transparent scrim from the left: keeps the left column's
+            navy text on a near-solid light surface (≥4.5:1) while the photo
+            still reads on the right, behind the planner card. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(to right, var(--color-mist) 0%, var(--color-mist) 42%, rgb(244 247 249 / 0.55) 58%, transparent 78%)',
+          }}
         />
       </div>
 
-      {/* Content layer */}
-      <div
-        ref={contentRef}
-        className="container-editorial relative z-10 flex min-h-svh flex-col justify-end pb-16 md:pb-24"
-      >
-        <div ref={labelRef}>
-          <SectionLabel index={hero.label.index}>{hero.label.text}</SectionLabel>
+      <div className="container-editorial relative z-10 grid min-h-[85svh] items-center gap-12 py-24 md:grid-cols-12 md:py-32">
+        {/* Left column — the 5-second answer */}
+        <div className="md:col-span-6">
+          <p ref={eyebrowRef} className="label text-cyan-deep">
+            {hero.eyebrow}
+          </p>
+          <h1 ref={headlineRef} className="mt-4 font-display text-display leading-[1.05] text-navy">
+            {hero.headline}
+          </h1>
+          <p ref={subRef} className="mt-4 max-w-md text-body text-slate">
+            {hero.sub}
+          </p>
+          <ul ref={trustRef} className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            {hero.trustStrip.map((item) => (
+              <li key={item} className="label text-slate">
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <RevealText
-          as="h1"
-          asLines
-          paused
-          onReady={handleHeadlineReady}
-          className="mt-6 font-display text-display leading-[1.02] text-bone"
-        >
-          {hero.headline.map((line, i) => (
-            <span key={i} className="block">
-              {line}
-            </span>
-          ))}
-        </RevealText>
+        {/* Right column — the planner card */}
+        <div ref={cardRef} className="md:col-span-6">
+          <form
+            onSubmit={handleSubmit}
+            noValidate
+            aria-label="Plan your trip"
+            className="rounded-2xl bg-white p-6 shadow-md md:p-8"
+          >
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Select
+                label="Destination"
+                placeholder="Choose a region"
+                value={destination}
+                onChange={(v) => {
+                  setDestination(v);
+                  if (errors.destination) setErrors((e) => ({ ...e, destination: undefined }));
+                }}
+                options={DESTINATION_OPTIONS}
+                error={errors.destination}
+              />
+              <Select
+                label="Category"
+                placeholder="Choose a category"
+                value={category}
+                onChange={(v) => {
+                  setCategory(v);
+                  if (errors.category) setErrors((e) => ({ ...e, category: undefined }));
+                }}
+                options={CATEGORY_OPTIONS}
+                error={errors.category}
+              />
+              <Stepper label="Guests" value={guests} onChange={setGuests} min={1} max={20} />
+              <Slider
+                label="Budget"
+                value={budget}
+                onChange={setBudget}
+                min={BUDGET_MIN}
+                max={BUDGET_MAX}
+                step={100}
+              />
+              <DateRange label="Dates" value={dates} onChange={setDates} className="sm:col-span-2" />
+            </div>
 
-        <div ref={ctaRef} className="mt-8">
-          <Button href={hero.cta.href} onClick={handleCta} variant="primary" magnetic icon={ArrowRight}>
-            {hero.cta.label}
-          </Button>
-        </div>
+            <button
+              type="submit"
+              className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-6 font-sans text-sm font-medium text-navy transition-colors duration-300 hover:bg-cyan-deep hover:text-white"
+            >
+              <span>Generate Journey</span>
+              <ArrowRight size={18} strokeWidth={1.5} aria-hidden="true" />
+            </button>
 
-        {/* Scroll cue — desktop only, decorative; CSS pulse dies under reduced motion */}
-        <div
-          ref={cueRef}
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-16 right-0 hidden flex-col items-center gap-3 md:flex md:bottom-24"
-        >
-          <span className="label text-stone">{hero.altitude}</span>
-          <span className="label text-stone">{hero.scrollLabel}</span>
-          <span className="h-12 w-px animate-pulse bg-stone/60" />
+            <a
+              href={hero.browseCta.href}
+              onClick={handleBrowse}
+              className="mt-4 block text-center text-small text-slate underline-offset-4 hover:text-cyan-deep hover:underline"
+            >
+              {hero.browseCta.label}
+            </a>
+          </form>
         </div>
       </div>
     </section>
   );
-});
-
-export default Hero;
+}
